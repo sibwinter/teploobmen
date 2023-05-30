@@ -6,7 +6,7 @@
 
 class Radiator():
     r_pk: float = 2  # тепловое контактное сопротивление между переходом и корпусом, Rпк, 2°С / Вт;
-    r_kr: float = 0.5  # тепловое контактное сопротивление корпус – теплоотвод Rкр, 0.5С / Вт 
+    r_kr: float = 0.5  # тепловое контактное сопротивление корпус – теплоотвод Rкр, 0.5С / Вт
 
     def __init__(self, p: float, t_outside: float, t_limit: float):
         self.p = p
@@ -22,9 +22,24 @@ class Radiator():
             raise ValueError("заданная мощность Р превышает Рмах")
         else:
             return p_max
-    
-    
 
+    def r_termal(self) -> float:
+        """Рассчитываем тепловое сопротивление радиатора Rр исх, °С/Bт;"""
 
-    
+        q = 0.96
+        try:
+            result = q*(
+                (self.t_limit-self.t_outside)
+                - self.p * (self.r_pk - self.r_kr)
+                )/self.p
+            return result
+        except (ZeroDivisionError, FloatingPointError) as e:
+            print(e, "something went wrong")
 
+    def t_average(self) -> float:
+        """Определяем средняю поверхностную температуру радиатора Тр, °С:"""
+        try:
+            result = self.p * self.r_termal() + self.t_outside
+            return result
+        except Exception as e:
+            print(e, "something went wrong")
