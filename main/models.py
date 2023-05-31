@@ -84,3 +84,16 @@ class Radiator():
         Sгл=L ·l """
         result = self.L_rib_length * self.l_radiator_length
         self.square_of_non_ribbed_surface = result
+
+    def square_of_ribbed_surfase(self) ->float:
+        """Определяем площадь оребренной поверхности радиатора.
+        
+        при креплении ППП с гладкой стороны, Sор1, м2;
+        Sор1=S1+S2+S3, где
+        S1=(n‑1) ·L ·b;
+        S2=(δ+2 ·h) ·L ·n+2 ·l ·δ;
+        S3=2 ·n ·δ ·h."""
+        square_1 = (self.n_number_of_edges - 1) * self.L_rib_length * self.b_edge_distanse
+        square_2 = (self.sigma_plate + 2 * self.h_rib_height) * self.L_rib_length * self.n_number_of_edges + 2 * self.l_radiator_length * self.sigma_plate
+        square_3 = 2 * self.n_number_of_edges * self.sigma_plate * self.h_rib_height
+        return square_1 + square_2 + square_3
