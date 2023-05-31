@@ -7,6 +7,14 @@
 class Radiator():
     r_pk: float = 2  # тепловое контактное сопротивление между переходом и корпусом, Rпк, 2°С / Вт;
     r_kr: float = 0.5  # тепловое контактное сопротивление корпус – теплоотвод Rкр, 0.5С / Вт
+    d_rib_thickness: float  # толщина ребра d
+    sigma_plate: float  # толщина плиты теплоотвода δ
+    b_edge_distanse: float  # расстояние между рёбрами b
+    h_rib_height: float  # высота ребра h
+    L_rib_length: float  # протяжённость ребра L
+    n_number_of_edges: int  # число ребер радиатора
+    l_radiator_length: float  # длина плиты радиатора
+    S_square_non_ribbed: float  # площадь гладкой (неоребренной) поверхности радиатора, Sгл, м2
 
     def __init__(self, p: float, t_outside: float, t_limit: float):
         self.p = p
@@ -43,3 +51,36 @@ class Radiator():
             return result
         except Exception as e:
             print(e, "something went wrong")
+
+    def init_plate_and_rib_parameters(self, d, sigma, b, h, L):
+        """Задаем параметры плиты и ребра нашего радиатора."""
+        self.d_rib_thickness = d
+        self.sigma_plate = sigma
+        self.b_edge_distanse = b
+        self.h_rib_height = h
+        self.L_rib_length = L
+
+    def number_of_adges_determine(self) -> int:
+        """Определяем число рёбер, n, шт.
+        n=(L+b)/(b+d)"""
+        result = (
+            (self.L_rib_length + self.b_edge_distanse) /
+            (self.b_edge_distanse + self.d_rib_thickness) + 1
+        )
+        self.n_number_of_edges = result
+
+    def length_of_radiator_plate_determine(self):
+        """Определяем длина плиты радиатора, l, м.
+
+        l=b · (n‑1)+2*d (5)"""
+        result = (
+            self.b_edge_distanse * (self.n_number_of_edges - 1) +
+            2 * self.d_rib_thickness)
+        self.l_radiator_length = result
+
+    def square_of_non_ribbed_surface(self):
+        """Определяем площадь гладкой (неоребренной) поверхности радиатора, Sгл, м2.
+
+        Sгл=L ·l """
+        result = self.L_rib_length * self.l_radiator_length
+        self.square_of_non_ribbed_surface = result
